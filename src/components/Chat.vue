@@ -12,7 +12,7 @@ const scrollToBottom = () => {
 const BotAnswersTemplates = {
     1: ['Добро пожаловать!', 'Чем я могу вам помочь?'],
     2: ['Хорошо!', 'В чем я могу вам помочь сегодня?'],
-    3: ['Дата: 29.12.2064', 'Чем я ещё могу вам помочь?'],
+    3: ['Будильник установлен на 7:00', 'Чем я ещё могу вам помочь?'],
     4: ['-5°C. Облачно и слабый снег, ветер полный штиль, северо-западный 0.0 м/с ', 'Чем я ещё могу вам помочь?'],
     5: ['21:34 Москва – 29 ноября, UTC +3 ', 'Чем я ещё могу вам помочь?']
 };
@@ -95,7 +95,7 @@ const sendPostponedMessage = () => {
         <div class="flex-ic-ja">
             <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 1)" text="Привет" />
             <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 2)" text="Как дела?" />
-            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 3)" text="Какой сегодня день?" />
+            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 3)" text="Установить будильник" />
         </div>
         <div class="flex-ic-ja">
             <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 4)" text="Какая сегодня погода?" />
