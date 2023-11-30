@@ -1,3 +1,10 @@
+<template>
+  <div class="bg-gray-75 rounded-3xl  flex-ic-jc min-h-[40px] px-5 py-2 clamp">
+      <div v-if="isTyping" class="dot-typing "></div>
+      <div v-else >{{ text }}</div>
+  </div>
+</template>
+
 <script setup>
 import { onMounted, ref, defineEmits } from 'vue';
 
@@ -18,15 +25,10 @@ defineProps({
 
 </script>
 
-
-<template>
-    <div class="bg-[#e1f1ff] rounded-3xl  flex-ic-jc min-h-[40px] px-5 py-2">
-        <div v-if="isTyping" class="dot-typing "></div>
-        <div v-else >{{ text }}</div>
-    </div>
-</template>
-
 <style scoped>
+.clamp{
+  font-size: clamp(14px, 4vw, 16px);
+}
 .dot-typing {
   position: relative;
   left: -9999px;

@@ -1,18 +1,3 @@
-<script setup>
-import { defineProps, defineEmits } from 'vue';
-import Message from './Message.vue';
-
-const emit = defineEmits(['sended']);
-
-const { from } = defineProps({
-    messages: Array,
-    from: {
-        type: String
-    },
-});
-
-</script>
-
 <template>
     <div :class="[from === 'me' ? 'flex-row-reverse':  'flex-row', 'flex gap-4']">
         <div class="w-9 h-9 shadow-10_30 rounded-full flex-ic-jc text-base mt-[1px]">
@@ -25,4 +10,22 @@ const { from } = defineProps({
         <div class="w-9"></div>
     </div>
 </template>
+
+<script setup>
+import { defineProps, defineEmits } from 'vue';
+import Message from './Message.vue';
+
+
+
+const emit = defineEmits(['sended']);
+
+const { from } = defineProps({
+    messages: Array,
+    from: {
+        type: String
+    },
+});
+
+</script>
+
 

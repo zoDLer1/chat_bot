@@ -7,8 +7,15 @@ module.exports = {
     extend: {
       boxShadow: {
         '10_30': '0 0px 20px rgba(0, 0, 0, 0.20)',
-        '70_20': '0 10px 70px 0 rgb(0 0 0 / 20%)'
       },
+      colors: {
+        gray: {
+            75: '#e2e8f0'
+        },
+        primary: {
+            300: '#4299e1'
+        }
+      }
     }
   },
   plugins: [],

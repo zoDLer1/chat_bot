@@ -1,3 +1,26 @@
+<template>
+    <div class=" border-gray-75 border rounded-lg overflow-hidden w-[450px]">
+        <div class="bg-primary-300 text-white p-4 text-center">
+          <h4 class="text-lg font-semibold">Chat Bot</h4>
+        </div>
+        <div class="p-6 h-80 overflow-y-auto" ref="scrollContainer">
+            <div class="flex-vertical gap-4">
+                <UsersMessages @sended="checkSendedMessage" :from="from" :messages="messages" v-for="{id, from, messages} in usersMessages" :key="id"/>
+            </div>
+        </div>
+        <div id="chat-input" class="p-4 border-t border-gray-75">
+          <div class="flex gap-3 flex-wrap justify-center">
+            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 1)" text="Привет" />
+                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 5)" text="Сколько время?" />
+                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 2)" text="Как дела?" />
+                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 3)" text="Установить будильник" />
+                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 4)" text="Какая погода?" />
+
+          </div>
+        </div>
+    </div>
+</template>
+
 <script setup>
 import { reactive, onMounted, ref, onUpdated } from 'vue';
 import UsersMessages from './UsersMessages.vue';
@@ -9,7 +32,7 @@ const scrollToBottom = () => {
     scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight;
 };
 
-const BotAnswersTemplates = {
+const botAnswersTemplates = {
     1: ['Добро пожаловать!', 'Чем я могу вам помочь?'],
     2: ['Хорошо!', 'В чем я могу вам помочь сегодня?'],
     3: ['Будильник установлен на 7:00', 'Чем я ещё могу вам помочь?'],
@@ -61,7 +84,7 @@ const checkSendedMessage = ({ from, answerTemplate }) => {
     scrollToBottom();
     const isPostponedSended = sendPostponedMessage();
     if (!isPostponedSended && from !== 'bot') {
-        for (const answer of BotAnswersTemplates[answerTemplate]) {
+        for (const answer of botAnswersTemplates[answerTemplate]) {
             sendMessage('bot', answer);
         }
     }
@@ -76,32 +99,4 @@ const sendPostponedMessage = () => {
     }
     return false;
 }
-
 </script>
-
-
-<template>
-<div class="border-[#e2e8f0] border rounded-lg overflow-hidden w-[450px]">
-    <div class="bg-[#4299e1] text-white p-4 text-center">
-      <h4 class="text-lg font-semibold">Chat Bot</h4>
-    </div>
-    <div class="p-6 h-80 overflow-y-auto" ref="scrollContainer">
-        <div class="flex-vertical gap-4">
-            <UsersMessages @sended="checkSendedMessage" :from="from" :messages="messages" v-for="{id, from, messages} in usersMessages" :key="id"/>
-        </div>
-    </div>
-    <div id="chat-input" class="p-4 border-t border-[#e2e8f0]">
-      <div class="flex-vertical gap-3">
-        <div class="flex-ic-ja">
-            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 1)" text="Привет" />
-            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 2)" text="Как дела?" />
-            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 3)" text="Установить будильник" />
-        </div>
-        <div class="flex-ic-ja">
-            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 4)" text="Какая сегодня погода?" />
-            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 5)" text="Сколько время?" />
-        </div>
-      </div>
-    </div>
-  </div>
-</template>

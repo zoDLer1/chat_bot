@@ -41,33 +41,9 @@
     .flex-ic-jc{
         @apply flex-ic justify-center
     }
-    .flex-ic-jb{
-        @apply flex-ic justify-between
-    }
-    .flex-ic-ja{
-        @apply flex-ic justify-around
-    }
-
-    .flex-ic-je{
-        @apply flex-ic justify-end
-    }
 
     .flex-vertical{
         @apply flex flex-col
-    }
-
-    .flex-vertical-ic{
-        @apply flex-ic flex-col
-    }
-    .flex-vertical-ic-jc{
-        @apply flex-vertical-ic justify-center
-    }
-
-    .text-sizing{
-        @apply overflow-hidden text-ellipsis whitespace-nowrap
-    }
-    .p-10-20{
-        @apply py-10 px-20
     }
 
 }
