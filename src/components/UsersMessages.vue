@@ -5,19 +5,16 @@
             <font-awesome-icon v-else :icon="['fas', 'user']" color="#4299e1" />
         </div>
         <div :class="[from === 'me' ? 'items-end': 'items-start', 'flex-vertical gap-3 flex-1']">
-            <Message v-for="{id, text, answerTemplate} in messages" :key="id" :text="text" @sended="() => emit('sended', {answerTemplate, text, from})" />
+            <Message v-for="{ id, text } in messages" :key="id" :text="text"  />
         </div>
         <div class="w-9"></div>
     </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps } from 'vue';
 import Message from './Message.vue';
 
-
-
-const emit = defineEmits(['sended']);
 
 const { from } = defineProps({
     messages: Array,
