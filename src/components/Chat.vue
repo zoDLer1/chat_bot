@@ -1,24 +1,33 @@
 <template>
-    <div class=" border-gray-75 border rounded-lg overflow-hidden w-[450px]">
-        <div class="bg-primary-300 text-white p-4 text-center">
-          <h4 class="text-lg font-semibold">Chat Bot</h4>
-        </div>
-        <div class="p-6 h-80 overflow-y-auto" ref="scrollContainer">
-            <div class="flex-vertical gap-4">
-                <UsersMessages @sended="checkSendedMessage" :from="from" :messages="messages" v-for="{id, from, messages} in usersMessages" :key="id"/>
-            </div>
-        </div>
-        <div id="chat-input" class="p-4 border-t border-gray-75">
-          <div class="flex gap-3 flex-wrap justify-center">
-            <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 1)" text="Привет" />
-                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 5)" text="Сколько время?" />
-                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 2)" text="Как дела?" />
-                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 3)" text="Установить будильник" />
-                <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 4)" text="Какая погода?" />
-
-          </div>
-        </div>
+  <div class="border-gray-75 border rounded-lg overflow-hidden w-[450px]">
+    <div class="bg-primary-300 text-white p-4 text-center">
+      <h4 class="text-lg font-semibold">Chat Bot</h4>
     </div>
+    <div class="p-6 h-80 overflow-y-auto" ref="scrollContainer">
+      <div class="flex-vertical gap-4">
+        <UsersMessages
+          :from="from"
+          :messages="messages"
+          v-for="{ id, from, messages } in usersMessages"
+          :key="id"
+        />
+      </div>
+    </div>
+    <div></div>
+    <div id="chat-input" class="p-4 border-t border-gray-75">
+      <div class="flex gap-3 flex-wrap justify-center">
+        <Action
+          :disabled="messageTyping"
+          @click="(message) => sendMessage('me', message, 1)"
+          text="Привет"
+        />
+        <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 5)" text="Сколько время?" />
+        <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 2)" text="Как дела?" />
+        <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 3)" text="Установить будильник" />
+        <Action :disabled="messageTyping" @click="(message)=>sendMessage('me', message, 4)" text="Какая погода?" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -42,61 +51,70 @@ const botAnswersTemplates = {
 
 
 const usersMessages = reactive([]);
-const postponedMessages = [];
 
 let messageTyping = ref(false);
 
-const sendMessage = (from, text, answerTemplate) => {
-    if (!messageTyping.value) {
-        const id = Date.now();
-        const message = {id: `message-${id}`, text, answerTemplate};
+const setNewUserMessage = (id, from, ...messages) => {
+    return usersMessages.push({
+        id: `userMessage-${id}`,
+        from,
+        messages
+    }) - 1
+}
 
-        const lastUserMessage = usersMessages.length ? usersMessages[usersMessages.length - 1] : null;
-        if (lastUserMessage && lastUserMessage.from === from) {
-            usersMessages[usersMessages.length - 1].messages.push(message);
-        }
-        else {
-            usersMessages.push({
-                id: `userMessage-${id}`,
-                from,
-                messages: [message]
-            })
-        }
-        messageTyping.value = true;
+const setNewMessage = (userMessage, message, index) => {
+    if (index) {
+        userMessage.messages[index] = message
     }
-    else{
-        postponedMessages.push({ from, text, answerTemplate });
+    else {
+        return userMessage.messages.push(message) - 1
     }
 }
+
+const getLastUserMessage = () => {
+    return usersMessages.length ? usersMessages[usersMessages.length - 1] : null;
+}
+
+const sendMessage = async (from, text, botAnswer) => {
+
+    return await new Promise((resolve, reject)=>{
+        messageTyping.value = true;
+        const id = Date.now();
+        let newMessageIndex = 0
+
+        const lastUserMessage = getLastUserMessage()
+        if (lastUserMessage && lastUserMessage.from === from) {
+            newMessageIndex = setNewMessage(lastUserMessage, {})
+        }
+        else {
+            setNewUserMessage(id, from, {})
+        }
+
+        setTimeout(async () => {
+            usersMessages[usersMessages.length - 1].messages[newMessageIndex] = {id: `message-${id}`, text};
+            messageTyping.value = false
+            if (botAnswer){
+                for (const answer of botAnswersTemplates[botAnswer]) {
+                    await sendMessage('bot', answer);
+                }
+                resolve()
+            }
+            else{
+                resolve()
+            }
+        }, 1000)
+
+    })
+    
+}
+
+onMounted(async ()=>{
+    await sendMessage('bot', 'Добро пожаловать!');
+    await sendMessage('bot', 'Чем я могу вам помочь?');
+})
 
 onUpdated(()=>{
     scrollToBottom();
 })
 
-onMounted(()=>{
-    sendMessage('bot', 'Добро пожаловать!');
-    sendMessage('bot', 'Чем я могу вам помочь?');
-})
-
-
-
-const checkSendedMessage = ({ from, answerTemplate }) => {
-    scrollToBottom();
-    const isPostponedSended = sendPostponedMessage();
-    if (!isPostponedSended && from !== 'bot') {
-        for (const answer of botAnswersTemplates[answerTemplate]) {
-            sendMessage('bot', answer);
-        }
-    }
-}
-
-const sendPostponedMessage = () => {
-    messageTyping.value = false;
-    if (postponedMessages.length) {
-        const { text, from, answerTemplate } = postponedMessages.shift();
-        sendMessage(from, text, answerTemplate);
-        return true;
-    }
-    return false;
-}
 </script>

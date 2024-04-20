@@ -1,23 +1,14 @@
 <template>
   <div class="bg-gray-75 rounded-3xl  flex-ic-jc min-h-[40px] px-5 py-2 clamp">
-      <div v-if="isTyping" class="dot-typing "></div>
+      <div v-if="!text" class="dot-typing "></div>
       <div v-else >{{ text }}</div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, defineEmits } from 'vue';
+import { defineProps } from 'vue';
 
-let isTyping = ref(true);
 
-const emit = defineEmits(['sended']);
-
-onMounted(()=>{
-    setTimeout(()=>{
-        isTyping.value = false;
-        emit('sended');
-    }, 1000);
-})
 
 defineProps({
     text: String
